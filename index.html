@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lernen – Articles</title>
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--ink:#1d1d1f;--muted:#6b6b70;--m:#2f6fdb;--f:#d9435b;--ok:#1f9d55;--line:#e4e1da}
+@media (prefers-color-scheme:dark){:root{--bg:#141416;--card:#1f1f23;--ink:#f2f2f2;--muted:#a0a0a8;--line:#33333a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+main{max-width:520px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:1.5rem;margin:4px 0 2px}
+.sub{color:var(--muted);margin:0 0 18px;font-size:.95rem}
+.tabs{display:flex;gap:8px;margin-bottom:16px}
+.tabs button{flex:1;padding:10px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-weight:600;font-size:.9rem}
+.tabs button.on{background:var(--ink);color:var(--bg)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 18px;text-align:center}
+.de{color:var(--muted);font-size:.95rem;margin-bottom:6px}
+.word{font-size:2.2rem;font-weight:700;margin:6px 0 20px;word-break:break-word}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.choices button{padding:18px;font-size:1.3rem;font-weight:700;border-radius:14px;border:2px solid var(--line);background:transparent;color:var(--ink)}
+.choices .m{border-color:var(--m);color:var(--m)}
+.choices .f{border-color:var(--f);color:var(--f)}
+.fb{min-height:64px;margin-top:18px;font-size:1.05rem;line-height:1.4}
+.fb .good{color:var(--ok);font-weight:700}
+.fb .bad{color:var(--f);font-weight:700}
+.fb .tip{display:block;color:var(--muted);font-size:.9rem;margin-top:4px}
+.next{margin-top:10px;width:100%;padding:14px;border-radius:14px;border:0;background:var(--ink);color:var(--bg);font-weight:700;font-size:1rem}
+.stats{display:flex;justify-content:space-between;color:var(--muted);font-size:.9rem;margin:14px 4px 0}
+.list{text-align:left}
+.list div{padding:10px 4px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px}
+.list .m{color:var(--m);font-weight:700}.list .f{color:var(--f);font-weight:700}
+.rules{text-align:left;line-height:1.55}
+.rules h3{margin:16px 0 6px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<main>
+<h1>Lernen 🇫🇷</h1>
+<p class="sub">Le, la, un, une : choisis le bon article.</p>
+
+<div class="tabs">
+  <button id="t-quiz" class="on">Quiz</button>
+  <button id="t-err">Mes erreurs</button>
+  <button id="t-rules">Astuces</button>
+</div>
+
+<section id="quiz">
+  <div class="card">
+    <div class="de" id="de"></div>
+    <div class="word" id="word"></div>
+    <div class="choices">
+      <button class="m" data-g="m">un / le</button>
+      <button class="f" data-g="f">une / la</button>
+    </div>
+    <div class="fb" id="fb"></div>
+    <button class="next hidden" id="next">Suivant →</button>
+  </div>
+  <div class="stats"><span id="score">0 / 0</span><span id="mode">Mode : tous les mots</span></div>
+</section>
+
+<section id="err" class="hidden">
+  <div class="card list" id="errlist"></div>
+  <button class="next" id="errquiz">Réviser mes erreurs</button>
+  <button class="next" id="errclear" style="background:transparent;color:var(--muted);border:1px solid var(--line)">Effacer la liste</button>
+</section>
+
+<section id="rules" class="hidden">
+  <div class="card rules">
+    <h3>Masculin (un / le)</h3>
+    Mots en <b>-age</b> : le fromage, le voyage (mais : la page, la plage, l'image)<br>
+    Mots en <b>-ment</b> : le moment, le logement<br>
+    Mots en <b>-eau</b> : le bureau, le gâteau (mais : l'eau = féminin)<br>
+    Mots en <b>-isme</b> : le racisme, le tourisme<br>
+    Jours, mois, saisons : le lundi, le printemps
+    <h3>Féminin (une / la)</h3>
+    Mots en <b>-tion / -sion</b> : la question, la télévision<br>
+    Mots en <b>-té</b> : la liberté, la santé (mais : l'été = masculin)<br>
+    Mots en <b>-ure</b> : la voiture, la culture<br>
+    Mots en <b>-ette</b> : la baguette, la fourchette<br>
+    Mots en <b>-ie</b> : la boulangerie, la vie
+    <h3>L'</h3>
+    Avant une voyelle : <b>l'</b> pour les deux. L'ami (m), l'école (f). Pour savoir, pense à « un ami », « une école ».
+    <h3>Pièges avec l'allemand</h3>
+    der Tisch → <b>la</b> table · die Sonne → <b>le</b> soleil · das Mädchen → <b>la</b> fille · der Mond → <b>la</b> lune
+  </div>
+</section>
+</main>
+
+<script>
+const W=[
+["voiture","f","das Auto"],["maison","f","das Haus"],["table","f","der Tisch"],["chaise","f","der Stuhl"],["lit","m","das Bett"],
+["téléphone","m","das Handy"],["ordinateur","m","der Computer"],["porte","f","die Tür"],["fenêtre","f","das Fenster"],["chambre","f","das Zimmer"],
+["cuisine","f","die Küche"],["salle de bain","f","das Badezimmer"],["toilettes","f","die Toilette (les toilettes)"],["douche","f","die Dusche"],["frigo","m","der Kühlschrank"],
+["pain","m","das Brot"],["eau","f","das Wasser"],["lait","m","die Milch"],["poulet","m","das Hähnchen"],["viande","f","das Fleisch"],
+["riz","m","der Reis"],["fromage","m","der Käse"],["pomme","f","der Apfel"],["sauce","f","die Soße"],["petit-déjeuner","m","das Frühstück"],
+["repas","m","die Mahlzeit"],["soleil","m","die Sonne"],["lune","f","der Mond"],["pluie","f","der Regen"],["neige","f","der Schnee"],
+["hiver","m","der Winter"],["été","m","der Sommer"],["jour","m","der Tag"],["nuit","f","die Nacht"],["semaine","f","die Woche"],
+["année","f","das Jahr"],["heure","f","die Stunde / Uhrzeit"],["matin","m","der Morgen"],["soirée","f","der Abend"],["fois","f","das Mal"],
+["ami","m","der Freund"],["amie","f","die Freundin"],["famille","f","die Familie"],["frère","m","der Bruder"],["sœur","f","die Schwester"],
+["mère","f","die Mutter"],["père","m","der Vater"],["cousin","m","der Cousin"],["fille","f","das Mädchen / die Tochter"],["garçon","m","der Junge"],
+["école","f","die Schule"],["université","f","die Universität"],["cours","m","der Kurs / Unterricht"],["examen","m","die Prüfung"],["livre","m","das Buch"],
+["question","f","die Frage"],["réponse","f","die Antwort"],["langue","f","die Sprache"],["mot","m","das Wort"],["phrase","f","der Satz"],
+["travail","m","die Arbeit"],["entreprise","f","die Firma"],["argent","m","das Geld"],["client","m","der Kunde"],["camion","m","der LKW"],
+["déménagement","m","der Umzug"],["carton","m","der Karton"],["rendez-vous","m","das Treffen / der Termin"],["ville","f","die Stadt"],["rue","f","die Straße"],
+["centre-ville","m","die Innenstadt"],["gare","f","der Bahnhof"],["train","m","der Zug"],["bus","m","der Bus"],["vélo","m","das Fahrrad"],
+["jeu","m","das Spiel"],["carte","f","die Karte"],["musique","f","die Musik"],["film","m","der Film"],["sport","m","der Sport"],
+["tête","f","der Kopf"],["main","f","die Hand"],["pied","m","der Fuß"],["dent","f","der Zahn"],["cœur","m","das Herz"],
+["vie","f","das Leben"],["temps","m","die Zeit / das Wetter"],["choix","m","die Wahl"],["peur","f","die Angst"],["idée","f","die Idee"],
+["problème","m","das Problem"],["moment","m","der Moment"],["plage","f","der Strand"],["page","f","die Seite"],["image","f","das Bild"],
+["lumière","f","das Licht"],["clé","f","der Schlüssel"],["sac","m","die Tasche"],["vêtement","m","das Kleidungsstück"],["chaussure","f","der Schuh"]
+];
+const V=/^[aeiouhâéèêëîïôûœ]/i;
+const art=(w,g,def)=>def?(V.test(w)?"l'":(g==="m"?"le ":"la ")):(g==="m"?"un ":"une ");
+const tips={
+ "table":"der Tisch est masculin en allemand, mais en français c'est féminin.",
+ "soleil":"die Sonne est féminin en allemand, mais en français c'est masculin.",
+ "lune":"der Mond est masculin en allemand, mais en français c'est féminin.",
+ "fille":"das Mädchen est neutre en allemand, mais une fille est féminin.",
+ "eau":"Attention : -eau est souvent masculin, mais l'eau est féminin.",
+ "été":"Attention : -té est souvent féminin, mais l'été est masculin.",
+ "page":"Attention : -age est souvent masculin, mais la page est féminin.",
+ "plage":"Attention : -age est souvent masculin, mais la plage est féminin.",
+ "image":"Attention : -age est souvent masculin, mais l'image est féminin.",
+ "toilettes":"On dit presque toujours « les toilettes » au pluriel."
+};
+function autoTip(w,g){
+ if(tips[w])return tips[w];
+ if(/(tion|sion)$/.test(w))return "Mots en -tion / -sion : presque toujours féminins.";
+ if(/ment$/.test(w))return "Mots en -ment : presque toujours masculins.";
+ if(/té$/.test(w))return "Mots en -té : presque toujours féminins.";
+ if(/ure$/.test(w))return "Mots en -ure : souvent féminins.";
+ if(/age$/.test(w))return "Mots en -age : souvent masculins.";
+ return "";
+}
+const store={
+ get(){try{return JSON.parse(localStorage.getItem("lernen_err")||"{}")}catch(e){return {}}},
+ set(o){try{localStorage.setItem("lernen_err",JSON.stringify(o))}catch(e){}}
+};
+let errs=store.get(),pool=W,cur=null,done=0,good=0,answered=false,errMode=false,last=-1;
+const $=id=>document.getElementById(id);
+
+function pick(){
+ const list=errMode?W.filter(x=>errs[x[0]]):W;
+ if(!list.length){errMode=false;$("mode").textContent="Mode : tous les mots";return pick();}
+ let i;do{i=Math.floor(Math.random()*list.length)}while(list.length>1&&list[i][0]===last);
+ cur=list[i];last=cur[0];answered=false;
+ $("de").textContent=cur[2];$("word").textContent="… "+cur[0];
+ $("fb").innerHTML="";$("next").classList.add("hidden");
+}
+function answer(g){
+ if(answered)return;answered=true;done++;
+ const [w,cg]=cur,ok=g===cg,full=art(w,cg,false)+w+"  ·  "+art(w,cg,true)+w,tip=autoTip(w,cg);
+ if(ok){good++;if(errs[w]){errs[w]--;if(errs[w]<=0)delete errs[w];}
+  $("fb").innerHTML='<span class="good">Correct !</span><br>'+full+(tip?'<span class="tip">'+tip+'</span>':"");}
+ else{errs[w]=(errs[w]||0)+2;
+  $("fb").innerHTML='<span class="bad">Faux.</span> C\'est '+(cg==="m"?"masculin":"féminin")+' :<br><b>'+full+'</b>'+(tip?'<span class="tip">'+tip+'</span>':"");}
+ store.set(errs);$("word").textContent=art(w,cg,false)+w;
+ $("score").textContent=good+" / "+done;$("next").classList.remove("hidden");
+}
+function renderErr(){
+ const k=Object.keys(errs);
+ $("errlist").innerHTML=k.length?k.map(w=>{const x=W.find(y=>y[0]===w);if(!x)return"";return '<div><span class="'+x[1]+'">'+art(w,x[1],false)+w+'</span><span>'+x[2]+'</span></div>'}).join(""):"<p>Pas encore d'erreurs. Fais un quiz !</p>";
+ $("errquiz").classList.toggle("hidden",!k.length);
+}
+function tab(t){
+ ["quiz","err","rules"].forEach(s=>{$(s).classList.toggle("hidden",s!==t);$("t-"+s).classList.toggle("on",s===t)});
+ if(t==="err")renderErr();
+}
+document.querySelectorAll(".choices button").forEach(b=>b.onclick=()=>answer(b.dataset.g));
+$("next").onclick=pick;
+$("t-quiz").onclick=()=>tab("quiz");$("t-err").onclick=()=>tab("err");$("t-rules").onclick=()=>tab("rules");
+$("errquiz").onclick=()=>{errMode=true;$("mode").textContent="Mode : mes erreurs";tab("quiz");pick()};
+$("errclear").onclick=()=>{errs={};store.set(errs);renderErr()};
+pick();
+</script>
+</body>
+</html>
